@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Dyslexia Helper</title>
+  <style>
+    body {
+      width: 300px;
+      padding: 15px;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #333;
+    }
+
+    .section {
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 15px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #2196F3;
+    }
+
+    .control {
+      margin: 12px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+
+    .control:hover {
+      background: #fff;
+      padding: 5px;
+      border-radius: 4px;
+    }
+
+    h2 {
+      margin: 10px 0;
+      color: #333;
+    }
+
+    /* Switch styles */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 45px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .3s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked+.slider {
+      background-color: #2196F3;
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(21px);
+    }
+
+    .controls-container {
+      transition: opacity 0.3s;
+      margin-top: 10px;
+    }
+
+    .disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    label {
+      font-size: 13px;
+      color: #555;
+    }
+
+    input[type="range"] {
+      width: 120px;
+      height: 4px;
+      border-radius: 2px;
+    }
+
+    select {
+      width: 120px;
+      padding: 3px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    input[type="color"] {
+      width: 40px;
+      height: 25px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .tts-controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    button {
+      background: #2196F3;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #1976D2;
+    }
+
+    button#stop {
+      background: #f44336;
+    }
+
+    button#stop:hover {
+      background: #d32f2f;
+    }
+
+    .tooltip {
+      position: relative;
+    }
+
+    .tooltip:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 4px 8px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      font-size: 12px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="section">
+    <div class="section-title">Extension Control</div>
+    <div class="control tooltip" data-tooltip="Enable/Disable all features">
+      <label>Enable Extension</label>
+      <label class="switch">
+        <input type="checkbox" id="enableExtension" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Feature Toggles</div>
+    <div class="control">
+      <label>Font Size Control</label>
+      <label class="switch">
+        <input type="checkbox" id="fontSizeEnabled" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="control">
+      <label>Text Styling</label>
+      <label class="switch">
+        <input type="checkbox" id="textStyleEnabled" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="control">
+      <label>Font Type</label>
+      <label class="switch">
+        <input type="checkbox" id="fontSelectEnabled" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="control">
+      <label>Colors</label>
+      <label class="switch">
+        <input type="checkbox" id="colorsEnabled" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="control">
+      <label>Highlighting</label>
+      <label class="switch">
+        <input type="checkbox" id="highlightEnabled" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="control">
+      <label>Spacing Controls</label>
+      <label class="switch">
+        <input type="checkbox" id="spacingEnabled" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Text Settings</div>
+    <div id="controlsContainer" class="controls-container">
+      <h2>Reading Settings</h2>
+      <div class="control">
+        <label>Font Size</label>
+        <input type="range" id="fontSize" min="12" max="32" value="16">
+      </div>
+      <div class="control">
+        <label for="bold">Bold</label>
+        <input type="checkbox" id="bold">
+      </div>
+      <div class="control">
+        <label for="italic">Italic</label>
+        <input type="checkbox" id="italic">
+      </div>
+      <div class="control">
+        <label>Font</label>
+        <select id="fontSelect">
+          <option value="default">Default</option>
+          <option value="open-dyslexic">Open Dyslexic</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Color Settings</div>
+    <div class="control">
+      <label>Text Color</label>
+      <input type="color" id="textColor" value="#000000">
+    </div>
+    <div class="control">
+      <label>Background</label>
+      <input type="color" id="bgColor" value="#ffffff">
+    </div>
+    <div class="control">
+      <label for="highlightColor">Highlight Color:</label>
+      <input type="color" id="highlightColor" value="#ffeb3b">
+    </div>
+    <div class="control">
+      <label>URL Color</label>
+      <input type="color" id="urlColor" value="#0000FF">
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Spacing Settings</div>
+    <div class="control">
+      <label>Word Spacing</label>
+      <input type="range" id="wordSpacing" min="0" max="50" value="0">
+    </div>
+    <div class="control">
+      <label>Line Spacing</label>
+      <input type="range" id="lineSpacing" min="1" max="3" step="0.1" value="1.5">
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Text-to-Speech</div>
+    <div class="control">
+        <label>Language</label>
+        <select id="ttsLanguage">
+            <option value="en-US">English</option>
+            <option value="ar">Arabic</option>
+        </select>
+    </div>
+    <div class="control">
+        <div class="tts-controls">
+            <button id="speak" class="tooltip" data-tooltip="Read selected text">
+                <i class="fas fa-play"></i> Speak
+            </button>
+            <button id="stop" class="tooltip" data-tooltip="Stop reading">
+                <i class="fas fa-stop"></i> Stop
+            </button>
+        </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+
+</html>
